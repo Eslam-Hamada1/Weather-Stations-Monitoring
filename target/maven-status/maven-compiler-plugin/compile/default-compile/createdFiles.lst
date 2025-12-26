@@ -1,5 +1,7 @@
-weather/WeatherReading.class
-weather/WeatherStationB.class
+weather/RainingDetectionApp.class
 com/au/weather/App.class
-weather/WeatherStationA.class
 weather/Weather.class
+weather/WeatherReading.class
+weather/demo.class
+weather/CentralStationApp.class
+weather/WeatherStationA.class
