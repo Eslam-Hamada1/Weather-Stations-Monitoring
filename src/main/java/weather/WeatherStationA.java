@@ -1,7 +1,9 @@
 package weather;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.common.serialization.StringSerializer;
+import java.util.Properties;
 import java.time.Instant;
 import java.util.Random;
 
@@ -15,7 +17,21 @@ public class WeatherStationA {
     public static void main(String[] args) throws Exception {
 
         long stationId = args.length > 0 ? Long.parseLong(args[0]) : 1;
-
+        Properties properties = new Properties();
+        properties.setProperty(
+            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+            "localhost:9092"
+        );
+        properties.setProperty(
+            ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+            StringSerializer.class.getName()
+        );
+        properties.setProperty(
+            ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+            StringSerializer.class.getName()
+        );
+        KafkaProducer<String, String> producer =
+                new KafkaProducer<>(properties);
         while (true) {
 
             // 10% drop
@@ -36,7 +52,11 @@ public class WeatherStationA {
             );
 
             String json = mapper.writeValueAsString(reading);
-            System.out.println(json);
+//            System.out.println(json);
+            ProducerRecord<String, String> record =
+                    new ProducerRecord<>("weather_readings", json);
+
+            producer.send(record);
 
             Thread.sleep(1000);
         }

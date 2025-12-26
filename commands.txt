@@ -1,1 +1,28 @@
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
+
 mvn clean compile exec:java -Dexec.mainClass=weather.WeatherStationA -Dexec.args="1"
+mvn clean compile exec:java -Dexec.mainClass=weather.RainingDetectionApp 
+mvn clean compile exec:java -Dexec.mainClass=weather.CentralStationApp 
+
+###to run kafka commands
+docker exec -it kafka bash
+
+
+###to list the topics
+kafka-topics --list --bootstrap-server localhost:9092  
+
+
+###to read records from a topic
+kafka-console-consumer --topic weather_readings --from-beginning --bootstrap-server localhost:9092 
+kafka-console-consumer --topic raining_alerts --from-beginning --bootstrap-server localhost:9092
+
+###to install PostgreSQL
+sudo apt update
+sudo apt install postgresql postgresql-contrib
+
+###to start the service for first time better to do it with chatgpt
+sudo service postgresql start
+sudo -u postgres psql
+psql -U postgres -W -d weatherdb -h localhost -p 5432
+SELECT * FROM weather_readings;
