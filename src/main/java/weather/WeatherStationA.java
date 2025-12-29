@@ -6,7 +6,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import java.util.Properties;
 import java.time.Instant;
 import java.util.Random;
-
+import java.net.InetAddress;
 public class WeatherStationA {
 
     private static final Random random = new Random();
@@ -17,11 +17,27 @@ public class WeatherStationA {
     public static void main(String[] args) throws Exception {
 
         long stationId = args.length > 0 ? Long.parseLong(args[0]) : 1;
+
+        String stationIdStr = System.getenv("STATION_ID");
+        if (stationIdStr != null && !stationIdStr.isEmpty()) {
+            // Handle pod names like "weather-station-0" - extract the number at the end
+            if (stationIdStr.contains("-")) {
+                String[] parts = stationIdStr.split("-");
+                stationId = Integer.parseInt(parts[parts.length - 1]) + 1; // +1 to start from 1
+            } else {
+                stationId = Integer.parseInt(stationIdStr);
+            }
+        }
         Properties properties = new Properties();
-        properties.setProperty(
-            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-            "localhost:9092"
-        );
+        // properties.setProperty(
+        //     ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+        //     "localhost:9092"
+        // );
+        String bootstrap = System.getenv("KAFKA_BOOTSTRAP_SERVERS");
+        if (bootstrap == null || bootstrap.isEmpty()) {
+            bootstrap = "localhost:9092";
+        }
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
         properties.setProperty(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
             StringSerializer.class.getName()

@@ -14,14 +14,23 @@ public class CentralStationApp {
     private static final String TOPIC = "weather_readings";
     private static final int BATCH_SIZE = 300;
 
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/weatherdb";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "postgres";
+    // private static final String DB_URL = "jdbc:postgresql://localhost:5432/weatherdb";
+    // private static final String DB_USER = "postgres";
+    // private static final String DB_PASSWORD = "postgres";
+
+    private static final String DB_URL = System.getenv("DB_URL") != null ? System.getenv("DB_URL") : "jdbc:postgresql://localhost:5432/weatherdb";
+    private static final String DB_USER = System.getenv("DB_USER") != null ? System.getenv("DB_USER") : "postgres";
+    private static final String DB_PASSWORD = System.getenv("DB_PASSWORD") != null ? System.getenv("DB_PASSWORD") : "postgres";
 
     public static void main(String[] args) throws Exception {
 
         Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        // props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        String bootstrap = System.getenv("KAFKA_BOOTSTRAP_SERVERS");
+        if (bootstrap == null || bootstrap.isEmpty()) {
+        bootstrap = "localhost:9092";
+        }
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "central-station-group");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
