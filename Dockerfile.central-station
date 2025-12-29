@@ -1,0 +1,6 @@
+FROM eclipse-temurin:17-jre-alpine
+
+WORKDIR /app
+COPY target/weather-stations-1.0-SNAPSHOT.jar app.jar
+
+ENTRYPOINT ["java", "-cp", "app.jar", "weather.CentralStationApp"]
