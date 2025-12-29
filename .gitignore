@@ -1,0 +1,21 @@
+# Compiled class files
+*.class
+
+# Maven build output
+target/
+
+# Maven shade plugin generated file
+dependency-reduced-pom.xml
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
