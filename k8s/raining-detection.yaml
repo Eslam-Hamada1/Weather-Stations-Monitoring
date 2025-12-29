@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: raining-detection
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: raining-detection
+  template:
+    metadata:
+      labels:
+        app: raining-detection
+    spec:
+      containers:
+      - name: raining-detection
+        image: raining-detection:1.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka:9092"
